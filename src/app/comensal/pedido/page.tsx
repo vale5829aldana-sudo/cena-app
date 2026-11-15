@@ -34,6 +34,7 @@ export default async function PedidoPage() {
     selections[it.categoryId] = {
       dishId: it.dishId,
       price: it.price,
+      shareFactor: it.shareFactor,
       name: it.dish.name,
     }
   }

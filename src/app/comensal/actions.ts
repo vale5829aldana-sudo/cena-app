@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { clearSession, getSession, setSession } from '@/lib/auth'
-import { computeBudget } from '@/lib/domain'
+import { computeBudget, SOLO_ENTRADA_FACTOR } from '@/lib/domain'
 
 export type ActionResult = { ok: boolean; error?: string }
 
@@ -224,6 +224,71 @@ export async function clearDishSelection(categoryId: string): Promise<ActionResu
   return { ok: true }
 }
 
+/** Comprueba si el comensal tiene una entrada compartida activa. */
+async function hasActivePairing(eventId: string, attendeeId: string) {
+  return prisma.pairing.findFirst({
+    where: {
+      eventId,
+      status: { in: ['PENDING', 'CONFIRMED'] },
+      OR: [{ initiatorId: attendeeId }, { partnerId: attendeeId }],
+    },
+  })
+}
+
+/**
+ * RN-6 (respaldo): el comensal toma la entrada solo y paga el 100 %.
+ * Solo se permite si no tiene una entrada compartida activa.
+ */
+export async function setSoloEntrada(entradaDishId: string): Promise<ActionResult> {
+  const me = await loadAttendee()
+  if (!me) return fail('Sesión no válida.')
+  if (me.event.status !== 'OPEN') return fail('El evento está cerrado.')
+  if (await hasActivePairing(me.eventId, me.id)) {
+    return fail('Ya tienes una entrada compartida activa.')
+  }
+
+  const dish = await prisma.dish.findUnique({
+    where: { id: entradaDishId },
+    include: { category: true },
+  })
+  if (!dish || !dish.active) return fail('Entrada no disponible.')
+  if (!dish.category.shareable) return fail('Esta categoría no es una entrada.')
+
+  await prisma.orderItem.upsert({
+    where: { attendeeId_categoryId: { attendeeId: me.id, categoryId: dish.categoryId } },
+    create: {
+      attendeeId: me.id,
+      categoryId: dish.categoryId,
+      dishId: dish.id,
+      price: dish.price,
+      shareFactor: SOLO_ENTRADA_FACTOR,
+    },
+    update: { dishId: dish.id, price: dish.price, shareFactor: SOLO_ENTRADA_FACTOR, pairingId: null },
+  })
+
+  revalidatePath(PATH)
+  return { ok: true }
+}
+
+/** Quita la entrada individual (solo si no hay una entrada compartida). */
+export async function clearSoloEntrada(): Promise<ActionResult> {
+  const me = await loadAttendee()
+  if (!me) return fail('Sesión no válida.')
+  if (me.event.status !== 'OPEN') return fail('El evento está cerrado.')
+  if (await hasActivePairing(me.eventId, me.id)) {
+    return fail('Tu entrada está compartida con otra persona.')
+  }
+
+  const cat = await prisma.category.findFirst({
+    where: { eventId: me.eventId, shareable: true },
+  })
+  if (cat) {
+    await prisma.orderItem.deleteMany({ where: { attendeeId: me.id, categoryId: cat.id } })
+  }
+  revalidatePath(PATH)
+  return { ok: true }
+}
+
 export async function confirmOrder(): Promise<ActionResult> {
   const me = await loadAttendee()
   if (!me) return fail('Sesión no válida.')
@@ -237,13 +302,14 @@ export async function confirmOrder(): Promise<ActionResult> {
   const plato = items.find((i) => i.category.slug === 'platos-fuertes')
   const bebida = items.find((i) => i.category.slug === 'bebidas')
 
-  if (!entrada) return fail('Debes compartir una entrada confirmada.')
+  if (!entrada) return fail('Debes elegir tu entrada (compartida o individual).')
   if (!plato) return fail('Debes elegir un plato fuerte.')
   if (!bebida) return fail('Debes elegir una bebida.')
 
   const budget = computeBudget({
     limit: me.limitAmount,
     entradaPrice: entrada.price,
+    entradaShareFactor: entrada.shareFactor,
     platoPrice: plato.price,
     bebidaPrice: bebida.price,
   })

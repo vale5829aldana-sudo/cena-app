@@ -46,6 +46,7 @@ export default async function AdminDashboard() {
     const budget = computeBudget({
       limit: a.limitAmount,
       entradaPrice: entrada?.price ?? 0,
+      entradaShareFactor: entrada?.shareFactor,
       platoPrice: plato?.price ?? 0,
       bebidaPrice: bebida?.price ?? 0,
     })

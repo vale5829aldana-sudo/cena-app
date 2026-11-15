@@ -107,7 +107,7 @@ export default async function ReportesPage() {
               <thead>
                 <tr className="border-b border-zinc-200 text-left text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800">
                   <th className="py-2 pr-4">Comensal</th>
-                  <th className="py-2 pr-4">Entrada (mitad)</th>
+                  <th className="py-2 pr-4">Entrada (parte)</th>
                   <th className="py-2 pr-4">Plato fuerte</th>
                   <th className="py-2 pr-4">Bebida</th>
                   <th className="py-2 pr-4 text-right">Total</th>
@@ -134,7 +134,7 @@ export default async function ReportesPage() {
                         <div>
                           {entrada.dish.name}
                           <div className="text-xs text-zinc-500">
-                            {formatCOP(Math.round(entrada.price / 2))}
+                            {formatCOP(Math.round(entrada.price * entrada.shareFactor))}
                           </div>
                         </div>
                       ) : (

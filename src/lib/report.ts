@@ -34,6 +34,7 @@ export function buildAttendeeRows(attendees: ReportAttendee[]): AttendeeRow[] {
     const budget = computeBudget({
       limit: attendee.limitAmount,
       entradaPrice: entrada?.price ?? 0,
+      entradaShareFactor: entrada?.shareFactor,
       platoPrice: plato?.price ?? 0,
       bebidaPrice: bebida?.price ?? 0,
     })
