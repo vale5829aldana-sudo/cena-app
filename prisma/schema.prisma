@@ -1,0 +1,145 @@
+// Esquema de datos — Cena App
+// Distribución equitativa de costos de la cena de un evento.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum EventStatus {
+  OPEN
+  CLOSED
+}
+
+enum PairingStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
+/// Evento único (la cena). Guarda la configuración global.
+model Event {
+  id           String      @id @default(cuid())
+  name         String
+  status       EventStatus @default(OPEN)
+  defaultLimit Int // límite por persona por defecto (COP)
+  createdAt    DateTime    @default(now())
+  closedAt     DateTime?
+
+  attendees  Attendee[]
+  categories Category[]
+  pairings   Pairing[]
+}
+
+/// Asistente / comensal del evento.
+model Attendee {
+  id          String   @id @default(cuid())
+  eventId     String
+  name        String
+  limitAmount Int // límite personal (COP)
+  createdAt   DateTime @default(now())
+  orderConfirmedAt DateTime?
+
+  event     Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+
+  initiatedPairings Pairing[] @relation("PairingInitiator")
+  partnerPairings   Pairing[] @relation("PairingPartner")
+
+  @@index([eventId])
+}
+
+/// Categoría del menú (Entradas, Platos fuertes, Bebidas, Mocktails...).
+model Category {
+  id          String  @id @default(cuid())
+  eventId     String
+  name        String
+  slug        String
+  maxPrice    Int // tope de precio de la categoría (COP)
+  requiredQty Int     @default(1)
+  shareable   Boolean @default(false) // las entradas se comparten
+  sortOrder   Int     @default(0)
+
+  event      Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  dishes     Dish[]
+  orderItems OrderItem[]
+
+  @@unique([eventId, slug])
+}
+
+/// Plato o bebida del menú.
+model Dish {
+  id           String   @id @default(cuid())
+  categoryId   String
+  name         String
+  description  String   @db.Text
+  price        Int // COP
+  imageUrl     String?
+  subgroup     String? // subgrupo para agrupar en la UI (ej. Mocktails / Gaseosas)
+  active       Boolean  @default(true)
+  isVegetarian Boolean  @default(false)
+  isVegan      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+  pairings   Pairing[]
+
+  @@index([categoryId])
+}
+
+/// Entrada compartida entre dos comensales.
+model Pairing {
+  id          String        @id @default(cuid())
+  eventId     String
+  dishId      String
+  initiatorId String
+  partnerId   String
+  status      PairingStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  confirmedAt DateTime?
+
+  event     Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  dish      Dish        @relation(fields: [dishId], references: [id])
+  initiator Attendee    @relation("PairingInitiator", fields: [initiatorId], references: [id], onDelete: Cascade)
+  partner   Attendee    @relation("PairingPartner", fields: [partnerId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+
+  @@index([eventId])
+  @@index([initiatorId])
+  @@index([partnerId])
+}
+
+/// Selección de un comensal. Para la entrada compartida, shareFactor = 0.5.
+model OrderItem {
+  id          String   @id @default(cuid())
+  attendeeId  String
+  categoryId  String
+  dishId      String
+  pairingId   String?
+  price       Int // precio del plato al momento de la selección
+  shareFactor Float    @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  attendee Attendee  @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
+  category Category  @relation(fields: [categoryId], references: [id])
+  dish     Dish      @relation(fields: [dishId], references: [id])
+  pairing  Pairing?  @relation(fields: [pairingId], references: [id], onDelete: SetNull)
+
+  @@unique([attendeeId, categoryId])
+  @@index([attendeeId])
+}
+
+/// Usuario administrador del panel.
+model AdminUser {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}

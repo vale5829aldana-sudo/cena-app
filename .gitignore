@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# herramientas de agentes / caché local de skills
+/.agents/
+/.claude/
+/.windsurf/
+/skills-lock.json
+
+# prisma generated client
+/src/generated
+
+# uploads de imágenes
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+/src/generated/prisma
