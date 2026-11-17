@@ -29,7 +29,7 @@ fuerte y una bebida**, sin superar su límite.
 | RN-2 | Cada comensal consume **exactamente**: 1 entrada (compartida), 1 plato fuerte y 1 bebida. |
 | RN-3 | Validación: `(precio_entrada / 2) + precio_plato_fuerte + precio_bebida ≤ límite_persona`. |
 | RN-4 | La entrada se comparte **exactamente entre 2 personas**. Requiere **confirmación mutua**: uno propone (entrada + pareja) y el otro acepta o rechaza. |
-| RN-5 | Los **topes por categoría** son configurables: entradas ≤ $40.000 y platos fuertes ≤ $50.000 (valores iniciales). |
+| RN-5 | Los **topes por categoría** son configurables: entradas ≤ $40.000 y platos fuertes ≤ $70.000 (valores iniciales). |
 | RN-6 | **Número impar de asistentes:** el administrador resuelve el caso (emparejamiento manual). Como respaldo, se permite la opción de entrada sin compartir (paga el 100%). |
 | RN-7 | El comensal puede **editar** su pedido hasta que el administrador **cierre el evento**. |
 | RN-8 | Todos los precios están en **COP** y se muestran con formato colombiano. |
@@ -52,7 +52,7 @@ fuerte y una bebida**, sin superar su límite.
 | 9 | Ceviche de Chicharrón Cremoso | 38.000 | 19.000 | |
 | 10 | Ceviche de Salmón | 38.000 | 19.000 | |
 
-### 5.2 Platos fuertes — tope $50.000 (6)
+### 5.2 Platos fuertes — tope $70.000 (6)
 
 | # | Nombre | Precio | Etiquetas |
 |---|---|---|---|

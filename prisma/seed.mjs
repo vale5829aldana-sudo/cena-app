@@ -8,7 +8,7 @@ const EVENT_ID = 'evt-principal'
 
 const CATEGORIES = [
   { id: 'cat-entradas', name: 'Entradas', slug: 'entradas', maxPrice: 40000, shareable: 1, sortOrder: 1 },
-  { id: 'cat-fuertes', name: 'Platos fuertes', slug: 'platos-fuertes', maxPrice: 50000, shareable: 0, sortOrder: 2 },
+  { id: 'cat-fuertes', name: 'Platos fuertes', slug: 'platos-fuertes', maxPrice: 70000, shareable: 0, sortOrder: 2 },
   { id: 'cat-bebidas', name: 'Bebidas', slug: 'bebidas', maxPrice: 30000, shareable: 0, sortOrder: 3 },
 ]
 
