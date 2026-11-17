@@ -1,8 +1,5 @@
 'use server'
 
-import { mkdir, unlink, writeFile } from 'node:fs/promises'
-import path from 'node:path'
-import { randomUUID } from 'node:crypto'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
@@ -14,16 +11,7 @@ import {
   hashPassword,
 } from '@/lib/auth'
 import type { ActionState } from '@/lib/action-state'
-
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads')
-const MAX_IMAGE_BYTES = 4 * 1024 * 1024
-const IMAGE_TYPES: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-  'image/gif': 'gif',
-  'image/avif': 'avif',
-}
+import { removeUpload, saveImage } from '@/lib/uploads'
 
 function fail(error: string): ActionState {
   return { ok: false, error }
@@ -54,27 +42,6 @@ function int(value: FormDataEntryValue | null): number {
 function bool(value: FormDataEntryValue | null): boolean {
   const v = String(value ?? '').toLowerCase()
   return v === 'on' || v === 'true' || v === '1'
-}
-
-/** Guarda la imagen recibida y devuelve su URL pública (o null si no se envió). */
-async function saveImage(file: FormDataEntryValue | null): Promise<string | null> {
-  if (!file || typeof file === 'string' || file.size === 0) return null
-  const ext = IMAGE_TYPES[file.type]
-  if (!ext) throw new Error('Formato no permitido. Usa JPG, PNG, WEBP, GIF o AVIF.')
-  if (file.size > MAX_IMAGE_BYTES) throw new Error('La imagen supera los 4 MB.')
-  await mkdir(UPLOAD_DIR, { recursive: true })
-  const filename = `${randomUUID()}.${ext}`
-  await writeFile(path.join(UPLOAD_DIR, filename), Buffer.from(await file.arrayBuffer()))
-  return `/uploads/${filename}`
-}
-
-async function removeUpload(url: string | null | undefined) {
-  if (!url || !url.startsWith('/uploads/')) return
-  try {
-    await unlink(path.join(process.cwd(), 'public', url.replace(/^\//, '')))
-  } catch {
-    // El archivo pudo haber sido borrado manualmente; no es crítico.
-  }
 }
 
 function revalidateAdmin() {

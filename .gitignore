@@ -49,13 +49,16 @@ next-env.d.ts
 # prisma generated client
 /src/generated
 
-# uploads de imágenes
-/public/uploads/*
-!/public/uploads/.gitkeep
+# uploads de imágenes (se sirven vía /uploads/[file], fuera de public/)
+/data/uploads/*
+!/data/uploads/.gitkeep
 
 # imágenes fuente originales (pesadas); las versiones web están en /public/brand
 /420419422_*.jpg
 /images.jpg
 /lp_background_image_*.jpg
+
+# imágenes fuente del menú (se importan a data/uploads)
+/imagenes-menu/
 
 /src/generated/prisma
