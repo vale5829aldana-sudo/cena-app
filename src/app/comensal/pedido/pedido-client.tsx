@@ -1,10 +1,12 @@
 'use client'
 
+import Image from 'next/image'
 import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { computeBudget, SHARED_ENTRADA_FACTOR, SOLO_ENTRADA_FACTOR } from '@/lib/domain'
 import { formatCOP } from '@/lib/format'
-import { Badge, Button, Card, cn } from '@/components/ui'
+import { Badge, Button, Card, Eyebrow, Select, cn } from '@/components/ui'
+import { BrandLockup } from '@/components/brand'
 import { AutoRefresh } from '@/components/auto-refresh'
 import {
   cancelPairing,
@@ -71,26 +73,87 @@ function DishCard({
       disabled={disabled}
       onClick={onSelect}
       className={cn(
-        'flex w-full flex-col rounded-xl border p-3 text-left transition-colors disabled:opacity-60',
+        'group flex w-full items-stretch gap-3 rounded-2xl border p-3 text-left transition-all duration-500 disabled:cursor-not-allowed disabled:opacity-50',
         selected
-          ? 'border-amber-500 bg-amber-50 ring-2 ring-amber-200 dark:bg-amber-950/40'
-          : 'border-zinc-200 bg-white hover:border-amber-300 dark:border-zinc-800 dark:bg-zinc-900',
+          ? 'border-gold-500/70 bg-gold-500/8 shadow-[0_26px_70px_-44px_rgba(232,163,61,0.9)] ring-1 ring-gold-500/25'
+          : 'border-ivory/12 bg-night-900/40 hover:-translate-y-0.5 hover:border-gold-500/35 hover:bg-night-900/70',
       )}
     >
-      <div className="flex items-start justify-between gap-2">
-        <span className="font-medium leading-tight">{dish.name}</span>
-        <span className="whitespace-nowrap text-sm font-semibold text-amber-700 dark:text-amber-400">
-          {formatCOP(dish.price)}
+      <span className="relative shrink-0">
+        {dish.imageUrl ? (
+          <Image
+            src={dish.imageUrl}
+            alt={dish.name}
+            width={64}
+            height={64}
+            className="h-16 w-16 rounded-xl object-cover"
+          />
+        ) : (
+          <span className="flex h-16 w-16 items-center justify-center rounded-xl border border-ivory/10 bg-night-950/50 text-gold-500/70">
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              aria-hidden
+            >
+              <path
+                d="M7 3v8a2.5 2.5 0 0 0 5 0V3M9.5 3v18M17 3c-1.4 1.6-1.4 5.4 0 7v11"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        )}
+        {selected ? (
+          <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-gold-500 text-night-950">
+            <svg
+              viewBox="0 0 20 20"
+              className="h-3 w-3"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              aria-hidden
+            >
+              <path d="m5 10 3.5 3.5L15 6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        ) : null}
+      </span>
+
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="flex items-start justify-between gap-2">
+          <span className="font-display text-base leading-tight text-ivory">
+            {dish.name}
+          </span>
+          <span className="whitespace-nowrap font-display text-sm text-gold-400">
+            {formatCOP(dish.price)}
+          </span>
         </span>
-      </div>
-      <p className="mt-1 line-clamp-3 text-xs text-zinc-500 dark:text-zinc-400">
-        {dish.description}
-      </p>
-      <div className="mt-2 flex gap-1">
-        {dish.isVegan ? <Badge tone="green">Vegano</Badge> : null}
-        {dish.isVegetarian && !dish.isVegan ? <Badge tone="green">Vegetariano</Badge> : null}
-      </div>
+        <span className="mt-1 line-clamp-2 text-xs leading-relaxed text-pearl">
+          {dish.description}
+        </span>
+        {dish.isVegan || dish.isVegetarian ? (
+          <span className="mt-2 flex gap-1.5">
+            {dish.isVegan ? (
+              <Badge tone="green">Vegano</Badge>
+            ) : (
+              <Badge tone="green">Vegetariano</Badge>
+            )}
+          </span>
+        ) : null}
+      </span>
     </button>
+  )
+}
+
+function SectionTitle({ index, children }: { index: string; children: string }) {
+  return (
+    <h2 className="mb-4 flex items-baseline gap-3">
+      <span className="font-display text-2xl text-gold-500/80">{index}</span>
+      <span className="font-display text-2xl text-ivory">{children}</span>
+    </h2>
   )
 }
 
@@ -170,55 +233,61 @@ export function PedidoClient(props: PedidoProps) {
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
       <AutoRefresh enabled={pairing?.status === 'PENDING'} />
 
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <header className="mb-8 flex items-center justify-between">
+        <BrandLockup href="/comensal" subtitle="Tu pedido" />
+        <form action={signOutAttendee}>
+          <Button variant="ghost" size="sm" type="submit">
+            Cambiar de comensal
+          </Button>
+        </form>
+      </header>
+
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-zinc-500">Comensal</p>
-          <h1 className="text-2xl font-bold">{attendee.name}</h1>
+          <Eyebrow>Comensal</Eyebrow>
+          <h1 className="mt-2 font-display text-4xl leading-tight text-ivory">
+            {attendee.name}
+          </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {attendee.confirmed ? <Badge tone="green">Pedido confirmado</Badge> : null}
           <Badge tone={closed ? 'red' : 'green'}>
             {closed ? 'Evento cerrado' : 'Evento abierto'}
           </Badge>
-          <form action={signOutAttendee}>
-            <Button variant="ghost" size="sm" type="submit">
-              Cambiar de comensal
-            </Button>
-          </form>
         </div>
       </div>
 
       {closed ? (
-        <Card className="mb-4 border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/40">
-          <p className="text-sm text-red-700 dark:text-red-300">
+        <Card className="mb-4 border-bombay-600/30 bg-bombay-600/10">
+          <p className="text-sm text-bombay-400">
             El evento está cerrado. Ya no puedes modificar tu pedido.
           </p>
         </Card>
       ) : null}
 
       {error ? (
-        <Card className="mb-4 border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/40">
-          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+        <Card className="mb-4 border-bombay-600/30 bg-bombay-600/10">
+          <p className="text-sm text-bombay-400">{error}</p>
         </Card>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-6">
+      <div className="grid gap-6 lg:grid-cols-[1fr_330px]">
+        <div className="space-y-8">
           {/* ENTRADA */}
           <section>
-            <h2 className="mb-3 text-lg font-semibold">1. Tu entrada</h2>
+            <SectionTitle index="01">Tu entrada</SectionTitle>
 
             {!pairing && entradaCat ? (
               <>
-                <div className="mb-3 inline-flex rounded-lg border border-zinc-300 bg-white p-1 text-sm dark:border-zinc-700 dark:bg-zinc-900">
+                <div className="mb-4 inline-flex rounded-full border border-ivory/15 bg-night-900/50 p-1 text-xs">
                   <button
                     type="button"
                     onClick={() => setModoEntrada('compartir')}
                     className={cn(
-                      'rounded-md px-3 py-1.5 font-medium transition-colors',
+                      'rounded-full px-4 py-1.5 font-medium tracking-wide transition-all duration-300',
                       modoEntrada === 'compartir'
-                        ? 'bg-amber-500 text-white'
-                        : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800',
+                        ? 'bg-gold-500 text-night-950'
+                        : 'text-pearl hover:text-ivory',
                     )}
                   >
                     Compartir con alguien
@@ -227,10 +296,10 @@ export function PedidoClient(props: PedidoProps) {
                     type="button"
                     onClick={() => setModoEntrada('solo')}
                     className={cn(
-                      'rounded-md px-3 py-1.5 font-medium transition-colors',
+                      'rounded-full px-4 py-1.5 font-medium tracking-wide transition-all duration-300',
                       modoEntrada === 'solo'
-                        ? 'bg-amber-500 text-white'
-                        : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800',
+                        ? 'bg-gold-500 text-night-950'
+                        : 'text-pearl hover:text-ivory',
                     )}
                   >
                     Tomarla solo
@@ -240,18 +309,18 @@ export function PedidoClient(props: PedidoProps) {
                 {modoEntrada === 'compartir' ? (
                   <Card>
                     {partners.length === 0 ? (
-                      <p className="text-sm text-zinc-500">
+                      <p className="text-sm text-pearl">
                         No hay compañeros disponibles para compartir. Pídele al
                         administrador que revise los emparejamientos, o toma la
                         entrada solo (pago completo).
                       </p>
                     ) : (
                       <>
-                        <p className="mb-3 text-sm text-zinc-500">
+                        <p className="mb-4 text-sm text-pearl">
                           Elige la entrada y con quién la compartirás (la mitad del
                           precio para cada uno).
                         </p>
-                        <div className="grid gap-2 sm:grid-cols-2">
+                        <div className="grid gap-2.5 sm:grid-cols-2">
                           {entradaCat.dishes.map((d) => (
                             <DishCard
                               key={d.id}
@@ -262,15 +331,14 @@ export function PedidoClient(props: PedidoProps) {
                             />
                           ))}
                         </div>
-                        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+                        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">
                           <div className="flex-1">
-                            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-pearl/80">
                               Compartir con
                             </label>
-                            <select
+                            <Select
                               value={partnerId}
                               onChange={(e) => setPartnerId(e.target.value)}
-                              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
                             >
                               <option value="">Selecciona un compañero…</option>
                               {partners.map((p) => (
@@ -278,7 +346,7 @@ export function PedidoClient(props: PedidoProps) {
                                   {p.name}
                                 </option>
                               ))}
-                            </select>
+                            </Select>
                           </div>
                           <Button
                             disabled={closed || pending || !entradaId || !partnerId}
@@ -296,11 +364,12 @@ export function PedidoClient(props: PedidoProps) {
                   </Card>
                 ) : (
                   <Card>
-                    <p className="mb-3 text-sm text-zinc-500">
+                    <p className="mb-4 text-sm text-pearl">
                       Respaldo para casos impares: si no compartes con nadie, tomas
-                      la entrada y pagas el <strong>100 %</strong> de su precio.
+                      la entrada y pagas el <strong className="text-ivory">100 %</strong>{' '}
+                      de su precio.
                     </p>
-                    <div className="grid gap-2 sm:grid-cols-2">
+                    <div className="grid gap-2.5 sm:grid-cols-2">
                       {entradaCat.dishes.map((d) => (
                         <DishCard
                           key={d.id}
@@ -317,12 +386,13 @@ export function PedidoClient(props: PedidoProps) {
             ) : null}
 
             {!pairing && soloEntrada ? (
-              <Card className="mt-3 border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/40">
-                <p className="text-sm">
+              <Card className="mt-4 border-gold-500/40 bg-gold-500/8">
+                <p className="text-sm text-ivory">
                   Tomas <strong>{soloEntrada.name}</strong> individualmente. Tu
-                  parte: <strong>{formatCOP(soloEntrada.price)}</strong> (100 %).
+                  parte: <strong className="text-gold-400">{formatCOP(soloEntrada.price)}</strong>{' '}
+                  (100 %).
                 </p>
-                <div className="mt-3">
+                <div className="mt-4">
                   <Button
                     variant="secondary"
                     size="sm"
@@ -336,12 +406,12 @@ export function PedidoClient(props: PedidoProps) {
             ) : null}
 
             {pairing?.status === 'PENDING' && pairing.role === 'initiator' ? (
-              <Card className="border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/40">
-                <p className="text-sm">
+              <Card className="border-gold-500/40 bg-gold-500/8">
+                <p className="text-sm text-ivory">
                   Propusiste compartir <strong>{pairing.dishName}</strong> con{' '}
                   <strong>{pairing.otherName}</strong>. Esperando su confirmación…
                 </p>
-                <div className="mt-3">
+                <div className="mt-4">
                   <Button
                     variant="secondary"
                     size="sm"
@@ -355,13 +425,17 @@ export function PedidoClient(props: PedidoProps) {
             ) : null}
 
             {pairing?.status === 'PENDING' && pairing.role === 'partner' ? (
-              <Card className="border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/40">
-                <p className="text-sm">
+              <Card className="border-midnight/60 bg-midnight/20">
+                <p className="text-sm text-ivory">
                   <strong>{pairing.otherName}</strong> te propone compartir{' '}
                   <strong>{pairing.dishName}</strong> ({formatCOP(pairing.dishPrice)}). Tu
-                  parte: <strong>{formatCOP(Math.round(pairing.dishPrice / 2))}</strong>.
+                  parte:{' '}
+                  <strong className="text-gold-400">
+                    {formatCOP(Math.round(pairing.dishPrice / 2))}
+                  </strong>
+                  .
                 </p>
-                <div className="mt-3 flex gap-2">
+                <div className="mt-4 flex gap-2">
                   <Button
                     size="sm"
                     disabled={pending || closed}
@@ -370,7 +444,7 @@ export function PedidoClient(props: PedidoProps) {
                     Aceptar
                   </Button>
                   <Button
-                    variant="secondary"
+                    variant="outline"
                     size="sm"
                     disabled={pending || closed}
                     onClick={() => run(() => respondPairing(pairing.id, false))}
@@ -382,11 +456,14 @@ export function PedidoClient(props: PedidoProps) {
             ) : null}
 
             {pairing?.status === 'CONFIRMED' ? (
-              <Card className="border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950/40">
-                <p className="text-sm">
+              <Card className="border-emerald-400/30 bg-emerald-500/8">
+                <p className="text-sm text-ivory">
                   Compartes <strong>{pairing.dishName}</strong> con{' '}
                   <strong>{pairing.otherName}</strong>. Tu parte:{' '}
-                  <strong>{formatCOP(Math.round(pairing.dishPrice / 2))}</strong>.
+                  <strong className="text-emerald-300">
+                    {formatCOP(Math.round(pairing.dishPrice / 2))}
+                  </strong>
+                  .
                 </p>
               </Card>
             ) : null}
@@ -395,8 +472,8 @@ export function PedidoClient(props: PedidoProps) {
           {/* PLATO FUERTE */}
           {platoCat ? (
             <section>
-              <h2 className="mb-3 text-lg font-semibold">2. Tu plato fuerte</h2>
-              <div className="grid gap-2 sm:grid-cols-2">
+              <SectionTitle index="02">Tu plato fuerte</SectionTitle>
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 {platoCat.dishes.map((d) => (
                   <DishCard
                     key={d.id}
@@ -413,14 +490,14 @@ export function PedidoClient(props: PedidoProps) {
           {/* BEBIDA */}
           {bebidaCat ? (
             <section>
-              <h2 className="mb-3 text-lg font-semibold">3. Tu bebida</h2>
-              <div className="space-y-4">
+              <SectionTitle index="03">Tu bebida</SectionTitle>
+              <div className="space-y-5">
                 {bebidaGroups.map(([group, dishes]) => (
                   <div key={group}>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gold-500/80">
                       {group}
                     </p>
-                    <div className="grid gap-2 sm:grid-cols-2">
+                    <div className="grid gap-2.5 sm:grid-cols-2">
                       {dishes.map((d) => (
                         <DishCard
                           key={d.id}
@@ -440,51 +517,63 @@ export function PedidoClient(props: PedidoProps) {
 
         {/* RESUMEN */}
         <aside className="lg:sticky lg:top-6 lg:h-fit">
-          <Card>
-            <h2 className="mb-3 text-lg font-semibold">Tu resumen</h2>
-            <dl className="space-y-2 text-sm">
+          <Card className="p-6">
+            <Eyebrow>Resumen</Eyebrow>
+            <dl className="mt-5 space-y-3 text-sm">
               <div className="flex justify-between">
-                <dt className="text-zinc-500">Límite por persona</dt>
-                <dd className="font-medium">{formatCOP(budget.limit)}</dd>
+                <dt className="text-pearl">Límite por persona</dt>
+                <dd className="text-ivory">{formatCOP(budget.limit)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-zinc-500">Entrada (tu parte)</dt>
-                <dd>{budget.entradaShare ? formatCOP(budget.entradaShare) : '—'}</dd>
+                <dt className="text-pearl">Entrada (tu parte)</dt>
+                <dd className="text-ivory">
+                  {budget.entradaShare ? formatCOP(budget.entradaShare) : '—'}
+                </dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-zinc-500">Plato fuerte</dt>
-                <dd>{budget.platoPrice ? formatCOP(budget.platoPrice) : '—'}</dd>
+                <dt className="text-pearl">Plato fuerte</dt>
+                <dd className="text-ivory">
+                  {budget.platoPrice ? formatCOP(budget.platoPrice) : '—'}
+                </dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-zinc-500">Bebida</dt>
-                <dd>{budget.bebidaPrice ? formatCOP(budget.bebidaPrice) : '—'}</dd>
-              </div>
-              <div className="mt-2 flex justify-between border-t border-zinc-200 pt-2 dark:border-zinc-800">
-                <dt className="font-semibold">Total</dt>
-                <dd className="font-semibold">{formatCOP(budget.total)}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-zinc-500">Disponible</dt>
-                <dd
-                  className={cn(
-                    'font-medium',
-                    budget.remaining < 0 ? 'text-red-600' : 'text-emerald-600',
-                  )}
-                >
-                  {formatCOP(budget.remaining)}
+                <dt className="text-pearl">Bebida</dt>
+                <dd className="text-ivory">
+                  {budget.bebidaPrice ? formatCOP(budget.bebidaPrice) : '—'}
                 </dd>
               </div>
             </dl>
 
+            <div className="my-5 h-px w-full bg-ivory/10" />
+
+            <div className="flex items-end justify-between">
+              <span className="text-sm text-pearl">Total</span>
+              <span className="font-display text-3xl text-ivory">
+                {formatCOP(budget.total)}
+              </span>
+            </div>
+            <div className="mt-2 flex justify-between text-sm">
+              <span className="text-pearl">Disponible</span>
+              <span
+                className={cn(
+                  'font-medium',
+                  budget.remaining < 0 ? 'text-bombay-400' : 'text-emerald-300',
+                )}
+              >
+                {formatCOP(budget.remaining)}
+              </span>
+            </div>
+
             {!budget.withinBudget ? (
-              <p className="mt-3 rounded-lg bg-red-50 p-2 text-xs text-red-700 dark:bg-red-950/40 dark:text-red-300">
+              <p className="mt-4 rounded-lg border border-bombay-600/30 bg-bombay-600/10 p-2.5 text-xs text-bombay-400">
                 Te pasas del límite. Ajusta tu plato o bebida.
               </p>
             ) : null}
 
-            <div className="mt-4 space-y-2">
+            <div className="mt-6 space-y-2.5">
               <Button
                 className="w-full"
+                size="lg"
                 disabled={closed || pending || !readyToConfirm}
                 onClick={() => run(() => confirmOrder())}
               >
@@ -506,7 +595,7 @@ export function PedidoClient(props: PedidoProps) {
             </div>
 
             {pending ? (
-              <p className="mt-2 text-center text-xs text-zinc-500">Guardando…</p>
+              <p className="mt-3 text-center text-xs text-pearl">Guardando…</p>
             ) : null}
           </Card>
         </aside>

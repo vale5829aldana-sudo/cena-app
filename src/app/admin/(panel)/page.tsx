@@ -13,7 +13,7 @@ export default async function AdminDashboard() {
   if (!event) {
     return (
       <Card>
-        <p className="text-sm text-red-600">
+        <p className="text-sm text-bombay-400">
           No hay evento configurado. Ejecuta el seed de la base de datos.
         </p>
       </Card>
@@ -64,8 +64,9 @@ export default async function AdminDashboard() {
   return (
     <>
       <PageHeader
+        eyebrow="Resumen"
         title={event.name}
-        subtitle="Resumen general del evento."
+        subtitle="Vista general del evento y sus pedidos."
         action={
           <Badge tone={event.status === 'OPEN' ? 'green' : 'red'}>
             {event.status === 'OPEN' ? 'Evento abierto' : 'Evento cerrado'}
@@ -75,20 +76,22 @@ export default async function AdminDashboard() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <Card key={s.label}>
-            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+          <Card key={s.label} className="p-5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-pearl/80">
               {s.label}
             </p>
-            <p className="mt-1 text-2xl font-bold">{s.value}</p>
-            <p className="mt-1 text-xs text-zinc-500">{s.hint}</p>
+            <p className="mt-2 font-display text-3xl leading-none text-ivory">
+              {s.value}
+            </p>
+            <p className="mt-2 text-xs text-pearl">{s.hint}</p>
           </Card>
         ))}
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <Card>
-          <h2 className="text-lg font-semibold">Estado del evento</h2>
-          <p className="mt-1 mb-4 text-sm text-zinc-500">
+        <Card className="p-6">
+          <h2 className="font-display text-xl text-ivory">Estado del evento</h2>
+          <p className="mt-1.5 mb-5 text-sm text-pearl">
             {event.status === 'OPEN'
               ? 'Los comensales pueden armar y editar sus pedidos.'
               : 'Los pedidos están bloqueados. Ábrelo para permitir cambios.'}
@@ -103,34 +106,34 @@ export default async function AdminDashboard() {
             </SubmitButton>
           </ActionForm>
           {event.closedAt ? (
-            <p className="mt-3 text-xs text-zinc-500">
+            <p className="mt-4 text-xs text-pearl">
               Cerrado el {new Date(event.closedAt).toLocaleString('es-CO')}
             </p>
           ) : null}
         </Card>
 
-        <Card>
-          <h2 className="text-lg font-semibold">Emparejamientos</h2>
-          <p className="mt-1 mb-4 text-sm text-zinc-500">
+        <Card className="p-6">
+          <h2 className="font-display text-xl text-ivory">Emparejamientos</h2>
+          <p className="mt-1.5 mb-5 text-sm text-pearl">
             Casos impares o comensales sin entrada compartida.
           </p>
           {unmatched.length === 0 ? (
-            <p className="text-sm text-emerald-600">
+            <p className="text-sm text-emerald-300">
               Todos los asistentes tienen su entrada compartida.
             </p>
           ) : (
             <>
-              <ul className="mb-3 space-y-1 text-sm">
+              <ul className="mb-4 space-y-2 text-sm">
                 {unmatched.map((a) => (
-                  <li key={a.id} className="flex items-center gap-2">
+                  <li key={a.id} className="flex items-center gap-2.5">
                     <Badge tone="amber">Sin pareja</Badge>
-                    <span>{a.name}</span>
+                    <span className="text-ivory">{a.name}</span>
                   </li>
                 ))}
               </ul>
               <Link
                 href="/admin/asistentes"
-                className="text-sm font-medium text-amber-600 hover:underline"
+                className="text-sm font-medium text-gold-400 transition-colors hover:text-gold-300"
               >
                 Resolver en Asistentes →
               </Link>
@@ -139,11 +142,17 @@ export default async function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-3">
-        <Link href="/admin/reportes" className="text-sm font-medium text-amber-600 hover:underline">
+      <div className="mt-6 flex flex-wrap gap-5">
+        <Link
+          href="/admin/reportes"
+          className="text-sm font-medium text-gold-400 transition-colors hover:text-gold-300"
+        >
           Ver reporte para la cocina →
         </Link>
-        <Link href="/comensal" className="text-sm font-medium text-amber-600 hover:underline">
+        <Link
+          href="/comensal"
+          className="text-sm font-medium text-pearl transition-colors hover:text-ivory"
+        >
           Vista del comensal →
         </Link>
       </div>

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getAttendees, getEvent } from '@/lib/data'
 import { formatCOP } from '@/lib/format'
 import { Badge, Card, PageHeader } from '@/components/ui'
+import { BrandLockup, SiteFooter } from '@/components/brand'
 import { selectAttendee } from './actions'
 
 export const dynamic = 'force-dynamic'
@@ -12,8 +13,12 @@ export default async function ComensalPage() {
   if (!event) {
     return (
       <main className="mx-auto w-full max-w-3xl px-6 py-16">
-        <PageHeader title="Comensales" subtitle="No hay evento configurado." />
-        <Link href="/" className="text-amber-600 hover:underline">
+        <PageHeader
+          eyebrow="Comensales"
+          title="Sin evento"
+          subtitle="No hay evento configurado."
+        />
+        <Link href="/" className="text-gold-400 transition-colors hover:text-gold-300">
           ← Volver al inicio
         </Link>
       </main>
@@ -23,14 +28,22 @@ export default async function ComensalPage() {
   const attendees = await getAttendees(event.id)
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-6 py-10">
-      <Link href="/" className="text-sm text-zinc-500 hover:underline">
-        ← Inicio
-      </Link>
-      <div className="mt-4">
+    <main className="mx-auto w-full max-w-5xl px-6 py-8">
+      <header className="flex items-center justify-between">
+        <BrandLockup href="/" subtitle="Cena del evento" />
+        <Link
+          href="/"
+          className="text-[11px] uppercase tracking-[0.28em] text-pearl transition-colors hover:text-ivory"
+        >
+          Inicio
+        </Link>
+      </header>
+
+      <div className="mt-12">
         <PageHeader
+          eyebrow="Bienvenido"
           title="¿Quién eres?"
-          subtitle="Selecciona tu nombre para armar tu pedido."
+          subtitle="Selecciona tu nombre para armar tu pedido de la noche."
           action={
             <Badge tone={event.status === 'OPEN' ? 'green' : 'red'}>
               {event.status === 'OPEN' ? 'Evento abierto' : 'Evento cerrado'}
@@ -41,27 +54,34 @@ export default async function ComensalPage() {
 
       {attendees.length === 0 ? (
         <Card>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-pearl">
             Aún no hay asistentes cargados. El administrador debe agregarlos en el
             panel.
           </p>
         </Card>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {attendees.map((a) => (
             <form key={a.id} action={selectAttendee}>
               <input type="hidden" name="attendeeId" value={a.id} />
               <button
                 type="submit"
-                className="w-full rounded-xl border border-zinc-200 bg-white p-4 text-left transition-colors hover:border-amber-400 hover:bg-amber-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-amber-500 dark:hover:bg-zinc-800"
+                className="group w-full rounded-2xl border border-ivory/12 bg-night-900/50 p-5 text-left backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-gold-500/50 hover:bg-night-900/80 hover:shadow-[0_30px_80px_-44px_rgba(232,163,61,0.6)]"
               >
-                <span className="block font-semibold">{a.name}</span>
-                <span className="mt-1 block text-xs text-zinc-500">
-                  Límite: {formatCOP(a.limitAmount)}
+                <span className="flex items-start justify-between gap-3">
+                  <span className="font-display text-xl leading-tight text-ivory">
+                    {a.name}
+                  </span>
+                  <span className="text-gold-500 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                    →
+                  </span>
+                </span>
+                <span className="mt-2 block text-xs uppercase tracking-[0.18em] text-pearl/70">
+                  Límite {formatCOP(a.limitAmount)}
                 </span>
                 {a.orderConfirmedAt ? (
-                  <span className="mt-2 inline-block text-xs font-medium text-emerald-600">
-                    ✓ Pedido confirmado
+                  <span className="mt-3 inline-flex">
+                    <Badge tone="green">✓ Pedido confirmado</Badge>
                   </span>
                 ) : null}
               </button>
@@ -69,6 +89,8 @@ export default async function ComensalPage() {
           ))}
         </div>
       )}
+
+      <SiteFooter />
     </main>
   )
 }

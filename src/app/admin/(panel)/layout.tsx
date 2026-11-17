@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { requireAdmin } from '@/lib/auth'
 import { Button } from '@/components/ui'
+import { BrandLockup } from '@/components/brand'
 import { logout } from '../actions'
 import { AdminNav } from './admin-nav'
 
@@ -11,18 +11,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-zinc-200 bg-white print:hidden dark:border-zinc-800 dark:bg-zinc-900">
+      <header className="sticky top-0 z-30 border-b border-ivory/10 bg-night-950/80 backdrop-blur-md print:hidden">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          <BrandLockup href="/" subtitle="Panel admin" />
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-lg font-bold tracking-tight">
-              🍽️ Cena App
-            </Link>
-            <span className="hidden rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500 sm:inline dark:bg-zinc-800 dark:text-zinc-400">
-              Panel admin
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="hidden text-xs text-zinc-500 sm:inline">
+            <span className="hidden text-xs uppercase tracking-[0.2em] text-pearl sm:inline">
               {session.username}
             </span>
             <form action={logout}>
@@ -36,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <AdminNav />
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">{children}</main>
+      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">{children}</main>
     </div>
   )
 }

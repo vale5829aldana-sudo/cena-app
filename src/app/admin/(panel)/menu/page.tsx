@@ -46,11 +46,11 @@ function DishFields({ dish }: { dish?: DishData }) {
             type="file"
             name="image"
             accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
-            className="block w-full text-sm text-zinc-500 file:mr-3 file:rounded-lg file:border-0 file:bg-zinc-100 file:px-3 file:py-2 file:text-sm file:font-medium dark:file:bg-zinc-800"
+            className="block w-full text-xs text-pearl file:mr-3 file:cursor-pointer file:rounded-full file:border-0 file:bg-ivory/10 file:px-4 file:py-2 file:text-xs file:font-medium file:text-ivory hover:file:bg-ivory/15"
           />
         </div>
       </div>
-      <div className="mt-3 flex gap-5">
+      <div className="mt-4 flex gap-6">
         <Checkbox name="isVegetarian" label="Vegetariano" defaultChecked={dish?.isVegetarian} />
         <Checkbox name="isVegan" label="Vegano" defaultChecked={dish?.isVegan} />
       </div>
@@ -63,7 +63,7 @@ export default async function MenuPage() {
   if (!event) {
     return (
       <Card>
-        <p className="text-sm text-red-600">No hay evento configurado.</p>
+        <p className="text-sm text-bombay-400">No hay evento configurado.</p>
       </Card>
     )
   }
@@ -73,13 +73,14 @@ export default async function MenuPage() {
   return (
     <>
       <PageHeader
+        eyebrow="Carta"
         title="Menú"
         subtitle="Administra categorías, platos, bebidas, precios e imágenes."
       />
 
       <div className="space-y-6">
         {categories.map((cat) => (
-          <Card key={cat.id}>
+          <Card key={cat.id} className="p-6">
             <ActionForm action={updateCategory} className="flex flex-wrap items-end gap-3">
               <input type="hidden" name="id" value={cat.id} />
               <div className="min-w-[180px] flex-1">
@@ -101,7 +102,7 @@ export default async function MenuPage() {
                 Guardar categoría
               </SubmitButton>
             </ActionForm>
-            <p className="mt-2 text-xs text-zinc-500">
+            <p className="mt-2.5 text-xs text-pearl">
               {cat.dishes.length} platos ·{" "}
               {cat.shareable ? "Se comparte entre dos comensales" : "Individual"}
             </p>
@@ -110,9 +111,9 @@ export default async function MenuPage() {
               {cat.dishes.map((dish) => (
                 <details
                   key={dish.id}
-                  className="rounded-xl border border-zinc-200 dark:border-zinc-800"
+                  className="group rounded-xl border border-ivory/10 bg-night-950/30"
                 >
-                  <summary className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3.5 py-2.5 [&::-webkit-details-marker]:hidden">
                     <span className="flex min-w-0 items-center gap-3">
                       {dish.imageUrl ? (
                         <Image
@@ -123,29 +124,47 @@ export default async function MenuPage() {
                           className="h-10 w-10 rounded-lg object-cover"
                         />
                       ) : (
-                        <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 text-lg dark:bg-zinc-800">
-                          🍽️
+                        <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-ivory/10 bg-night-900/60 text-gold-500/70">
+                          <svg
+                            viewBox="0 0 24 24"
+                            className="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.3"
+                            aria-hidden
+                          >
+                            <path
+                              d="M7 3v8a2.5 2.5 0 0 0 5 0V3M9.5 3v18M17 3c-1.4 1.6-1.4 5.4 0 7v11"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
                         </span>
                       )}
-                      <span className="truncate font-medium">{dish.name}</span>
+                      <span className="truncate font-medium text-ivory">{dish.name}</span>
                       {!dish.active ? <Badge tone="red">Oculto</Badge> : null}
                       {dish.isVegan ? <Badge tone="green">Vegano</Badge> : null}
                     </span>
-                    <span className="whitespace-nowrap text-sm font-semibold text-amber-700 dark:text-amber-400">
-                      {formatCOP(dish.price)}
+                    <span className="flex items-center gap-3">
+                      <span className="whitespace-nowrap font-display text-sm text-gold-400">
+                        {formatCOP(dish.price)}
+                      </span>
+                      <span className="text-pearl transition-transform duration-300 group-open:rotate-180">
+                        ⌄
+                      </span>
                     </span>
                   </summary>
 
-                  <div className="border-t border-zinc-100 p-3 dark:border-zinc-800">
+                  <div className="border-t border-ivory/10 p-4">
                     <ActionForm action={updateDish} encType="multipart/form-data">
                       <input type="hidden" name="id" value={dish.id} />
                       <DishFields dish={dish} />
-                      <div className="mt-3">
+                      <div className="mt-4">
                         <SubmitButton pendingLabel="Guardando…">Guardar cambios</SubmitButton>
                       </div>
                     </ActionForm>
 
-                    <div className="mt-3 flex flex-wrap gap-2 border-t border-zinc-100 pt-3 dark:border-zinc-800">
+                    <div className="mt-4 flex flex-wrap gap-2 border-t border-ivory/10 pt-4">
                       <ActionForm action={toggleDishActive}>
                         <input type="hidden" name="id" value={dish.id} />
                         <SubmitButton variant="secondary" size="sm" pendingLabel="…">
@@ -156,7 +175,7 @@ export default async function MenuPage() {
                         <input type="hidden" name="id" value={dish.id} />
                         <ConfirmButton
                           message={`¿Eliminar "${dish.name}"?`}
-                          className="text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40"
+                          className="border border-bombay-600/50 text-bombay-400 hover:bg-bombay-600/15"
                         >
                           Eliminar
                         </ConfirmButton>
@@ -167,20 +186,20 @@ export default async function MenuPage() {
               ))}
             </div>
 
-            <details className="mt-3">
-              <summary className="cursor-pointer text-sm font-medium text-amber-600">
+            <details className="mt-4">
+              <summary className="cursor-pointer list-none text-sm font-medium text-gold-400 transition-colors hover:text-gold-300 [&::-webkit-details-marker]:hidden">
                 + Agregar plato a {cat.name}
               </summary>
-              <div className="mt-3">
+              <div className="mt-4">
                 <ActionForm
                   action={createDish}
                   encType="multipart/form-data"
                   resetOnSuccess
-                  className="rounded-xl bg-zinc-50 p-3 dark:bg-zinc-950/40"
+                  className="rounded-xl border border-ivory/10 bg-night-950/40 p-4"
                 >
                   <input type="hidden" name="categoryId" value={cat.id} />
                   <DishFields />
-                  <div className="mt-3">
+                  <div className="mt-4">
                     <SubmitButton pendingLabel="Agregando…">Agregar plato</SubmitButton>
                   </div>
                 </ActionForm>

@@ -11,7 +11,7 @@ export default async function ConfigPage() {
   if (!event) {
     return (
       <Card>
-        <p className="text-sm text-red-600">No hay evento configurado.</p>
+        <p className="text-sm text-bombay-400">No hay evento configurado.</p>
       </Card>
     )
   }
@@ -20,16 +20,20 @@ export default async function ConfigPage() {
 
   return (
     <>
-      <PageHeader title="Configuración" subtitle="Límites, topes por categoría y seguridad." />
+      <PageHeader
+        eyebrow="Ajustes"
+        title="Configuración"
+        subtitle="Límites, topes por categoría y seguridad."
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <h2 className="text-lg font-semibold">Datos del evento</h2>
-          <p className="mt-1 mb-4 text-sm text-zinc-500">
+        <Card className="p-6">
+          <h2 className="font-display text-xl text-ivory">Datos del evento</h2>
+          <p className="mt-1.5 mb-5 text-sm text-pearl">
             Nombre y límite de gasto por persona.
           </p>
           <ActionForm action={updateEvent}>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
                 <Label>Nombre del evento</Label>
                 <Input name="name" defaultValue={event.name} required />
@@ -44,7 +48,7 @@ export default async function ConfigPage() {
                   defaultValue={event.defaultLimit}
                   required
                 />
-                <p className="mt-1 text-xs text-zinc-500">
+                <p className="mt-1.5 text-xs text-pearl">
                   Actualmente: {formatCOP(event.defaultLimit)} por persona.
                 </p>
               </div>
@@ -53,18 +57,18 @@ export default async function ConfigPage() {
                 label="Aplicar este límite a todos los asistentes"
               />
             </div>
-            <div className="mt-4">
+            <div className="mt-5">
               <SubmitButton pendingLabel="Guardando…">Guardar configuración</SubmitButton>
             </div>
           </ActionForm>
         </Card>
 
-        <Card>
-          <h2 className="text-lg font-semibold">Estado del evento</h2>
-          <p className="mt-1 mb-4 text-sm text-zinc-500">
+        <Card className="p-6">
+          <h2 className="font-display text-xl text-ivory">Estado del evento</h2>
+          <p className="mt-1.5 mb-5 text-sm text-pearl">
             Al cerrar el evento, los comensales ya no pueden modificar sus pedidos.
           </p>
-          <div className="mb-4">
+          <div className="mb-5">
             <Badge tone={event.status === 'OPEN' ? 'green' : 'red'}>
               {event.status === 'OPEN' ? 'Evento abierto' : 'Evento cerrado'}
             </Badge>
@@ -80,9 +84,9 @@ export default async function ConfigPage() {
           </ActionForm>
         </Card>
 
-        <Card>
-          <h2 className="text-lg font-semibold">Topes por categoría</h2>
-          <p className="mt-1 mb-4 text-sm text-zinc-500">
+        <Card className="p-6">
+          <h2 className="font-display text-xl text-ivory">Topes por categoría</h2>
+          <p className="mt-1.5 mb-5 text-sm text-pearl">
             Precio máximo permitido por plato en cada categoría.
           </p>
           <div className="space-y-4">
@@ -113,13 +117,13 @@ export default async function ConfigPage() {
           </div>
         </Card>
 
-        <Card>
-          <h2 className="text-lg font-semibold">Seguridad</h2>
-          <p className="mt-1 mb-4 text-sm text-zinc-500">
+        <Card className="p-6">
+          <h2 className="font-display text-xl text-ivory">Seguridad</h2>
+          <p className="mt-1.5 mb-5 text-sm text-pearl">
             Cambia la contraseña del administrador.
           </p>
           <ActionForm action={changePassword} resetOnSuccess>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
                 <Label>Contraseña actual</Label>
                 <Input
@@ -140,7 +144,7 @@ export default async function ConfigPage() {
                 />
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-5">
               <SubmitButton pendingLabel="Guardando…">Cambiar contraseña</SubmitButton>
             </div>
           </ActionForm>

@@ -15,7 +15,7 @@ const NAV = [
 export function AdminNav() {
   const pathname = usePathname()
   return (
-    <nav className="flex flex-wrap gap-1">
+    <nav className="flex flex-wrap gap-1.5">
       {NAV.map((item) => {
         const active =
           item.href === '/admin' ? pathname === '/admin' : pathname.startsWith(item.href)
@@ -24,10 +24,10 @@ export function AdminNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              'rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
+              'rounded-full border px-3.5 py-1.5 text-xs font-medium tracking-wide transition-all duration-300',
               active
-                ? 'bg-amber-600 text-white'
-                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800',
+                ? 'border-gold-500/50 bg-gold-500/10 text-gold-400'
+                : 'border-transparent text-pearl hover:border-ivory/15 hover:bg-ivory/5 hover:text-ivory',
             )}
           >
             {item.label}

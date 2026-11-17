@@ -34,12 +34,12 @@ export function ActionForm({
     <form ref={ref} action={formAction} className={className} encType={encType}>
       {children}
       {state?.error ? (
-        <p className="mt-2 rounded-lg bg-red-50 px-2 py-1 text-xs text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <p className="mt-2 rounded-lg border border-bombay-600/30 bg-bombay-600/10 px-2.5 py-1.5 text-xs text-bombay-400">
           {state.error}
         </p>
       ) : null}
       {state?.ok && state.message ? (
-        <p className="mt-2 rounded-lg bg-emerald-50 px-2 py-1 text-xs text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+        <p className="mt-2 rounded-lg border border-emerald-400/25 bg-emerald-500/10 px-2.5 py-1.5 text-xs text-emerald-300">
           {state.message}
         </p>
       ) : null}
@@ -48,8 +48,8 @@ export function ActionForm({
 }
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
-  size?: 'sm' | 'md'
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost'
+  size?: 'sm' | 'md' | 'lg'
   pendingLabel?: string
 }
 
@@ -99,7 +99,7 @@ export function ConfirmButton({
         if (!confirm(message)) event.preventDefault()
       }}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3.5 py-1.5 text-xs font-medium tracking-wide transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60',
         className,
       )}
     >
@@ -121,7 +121,7 @@ export function PrintButton({
       type="button"
       onClick={() => window.print()}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-800 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700',
+        'inline-flex items-center justify-center gap-2 rounded-full border border-ivory/20 px-4 py-2 text-sm font-medium tracking-wide text-ivory transition-all duration-300 hover:border-ivory/45 hover:bg-ivory/5',
         className,
       )}
     >

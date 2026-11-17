@@ -53,4 +53,9 @@ next-env.d.ts
 /public/uploads/*
 !/public/uploads/.gitkeep
 
+# imágenes fuente originales (pesadas); las versiones web están en /public/brand
+/420419422_*.jpg
+/images.jpg
+/lp_background_image_*.jpg
+
 /src/generated/prisma
