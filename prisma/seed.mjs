@@ -6,6 +6,9 @@ import { randomBytes, scryptSync } from 'node:crypto'
 
 const EVENT_ID = 'evt-principal'
 
+const EVENT_DESCRIPTION =
+  'Una noche bajo las estrellas. Cada comensal arma su experiencia —entrada compartida, plato fuerte y bebida— dentro de su límite de gasto.'
+
 const CATEGORIES = [
   { id: 'cat-entradas', name: 'Entradas', slug: 'entradas', maxPrice: 40000, shareable: 1, sortOrder: 1 },
   { id: 'cat-fuertes', name: 'Platos fuertes', slug: 'platos-fuertes', maxPrice: 70000, shareable: 0, sortOrder: 2 },
@@ -152,10 +155,11 @@ async function main() {
     const defaultLimit = 100000
 
     await conn.query(
-      `INSERT INTO Event (id, name, status, defaultLimit, createdAt)
-       VALUES (?, ?, 'OPEN', ?, NOW())
-       ON DUPLICATE KEY UPDATE name = VALUES(name)`,
-      [EVENT_ID, 'Cena Evento', defaultLimit],
+      `INSERT INTO Event (id, name, description, status, defaultLimit, createdAt)
+       VALUES (?, ?, ?, 'OPEN', ?, NOW())
+       ON DUPLICATE KEY UPDATE name = VALUES(name),
+         description = IF(Event.description = '', VALUES(description), Event.description)`,
+      [EVENT_ID, 'Cena Evento', EVENT_DESCRIPTION, defaultLimit],
     )
 
     for (const c of CATEGORIES) {

@@ -90,7 +90,7 @@ fuerte y una bebida**, sin superar su límite.
 
 ## 6. Modelo de datos (propuesto)
 
-- **Event** — evento único: `id`, `name`, `status` (OPEN/CLOSED), `defaultLimit`, `createdAt`, `closedAt`.
+- **Event** — evento único: `id`, `name`, `description`, `status` (OPEN/CLOSED), `defaultLimit`, `createdAt`, `closedAt`.
 - **Attendee** — `id`, `eventId`, `name`, `limitAmount`, `createdAt`.
 - **Category** — `id`, `eventId`, `name`, `slug`, `maxPrice` (tope), `requiredQty`, `shareable` (bool), `sortOrder`.
 - **Dish** — `id`, `categoryId`, `name`, `description`, `price`, `imageUrl`, `active`, `isVegetarian`, `isVegan`.
@@ -111,7 +111,7 @@ fuerte y una bebida**, sin superar su límite.
 
 ### 7.2 Administrador
 1. Inicia sesión (usuario y contraseña).
-2. Configura el **límite por persona** (global y/o individual) y los **topes por categoría**.
+2. Configura el **nombre y la descripción del evento**, el **límite por persona** (global y/o individual) y los **topes por categoría**.
 3. Administra **asistentes** (crear, editar, eliminar).
 4. Administra **platos y bebidas** (CRUD + subida de imágenes).
 5. Resuelve **casos impares** (emparejamiento manual).

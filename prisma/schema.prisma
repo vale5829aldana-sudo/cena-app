@@ -26,6 +26,8 @@ enum PairingStatus {
 model Event {
   id           String      @id @default(cuid())
   name         String
+  /// Descripción corta que se muestra en la portada del evento.
+  description  String      @default("") @db.VarChar(280)
   status       EventStatus @default(OPEN)
   defaultLimit Int // límite por persona por defecto (COP)
   createdAt    DateTime    @default(now())

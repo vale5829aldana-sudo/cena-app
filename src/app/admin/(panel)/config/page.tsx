@@ -1,6 +1,6 @@
 import { getEvent, getMenuForAdmin } from '@/lib/data'
 import { formatCOP } from '@/lib/format'
-import { Badge, Card, Checkbox, Input, Label, PageHeader } from '@/components/ui'
+import { Badge, Card, Checkbox, Input, Label, PageHeader, Textarea } from '@/components/ui'
 import { ActionForm, SubmitButton } from '@/components/action-form'
 import { changePassword, setEventStatus, updateCategory, updateEvent } from '../../actions'
 
@@ -30,13 +30,26 @@ export default async function ConfigPage() {
         <Card className="p-6">
           <h2 className="font-display text-xl text-ivory">Datos del evento</h2>
           <p className="mt-1.5 mb-5 text-sm text-pearl">
-            Nombre y límite de gasto por persona.
+            Nombre, descripción y límite de gasto por persona.
           </p>
           <ActionForm action={updateEvent}>
             <div className="space-y-4">
               <div>
                 <Label>Nombre del evento</Label>
                 <Input name="name" defaultValue={event.name} required />
+              </div>
+              <div>
+                <Label>Descripción</Label>
+                <Textarea
+                  name="description"
+                  rows={4}
+                  maxLength={280}
+                  defaultValue={event.description}
+                  placeholder="Una noche bajo las estrellas…"
+                />
+                <p className="mt-1.5 text-xs text-pearl">
+                  Se muestra en la portada del evento. Máximo 280 caracteres.
+                </p>
               </div>
               <div>
                 <Label>Límite por defecto (COP)</Label>

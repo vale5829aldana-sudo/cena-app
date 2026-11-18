@@ -189,6 +189,7 @@ export async function updateEvent(
   if (!event) return fail('No hay evento configurado.')
 
   const name = text(formData.get('name')) || event.name
+  const description = text(formData.get('description'))
   const defaultLimit = int(formData.get('defaultLimit'))
   if (!Number.isFinite(defaultLimit) || defaultLimit <= 0) {
     return fail('El límite por defecto debe ser mayor a 0.')
@@ -197,7 +198,7 @@ export async function updateEvent(
   const applyToAll = bool(formData.get('applyLimitToAll'))
 
   await prisma.$transaction(async (tx) => {
-    await tx.event.update({ where: { id: event.id }, data: { name, defaultLimit } })
+    await tx.event.update({ where: { id: event.id }, data: { name, description, defaultLimit } })
     if (applyToAll) {
       await tx.attendee.updateMany({ where: { eventId: event.id }, data: { limitAmount: defaultLimit } })
     }
