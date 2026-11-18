@@ -98,7 +98,7 @@ export default async function Home() {
               {STEPS.map((step, index) => (
                 <li
                   key={step.title}
-                  className="group relative flex h-full flex-col rounded-2xl border border-gold-500/25 bg-[linear-gradient(180deg,rgba(232,163,61,0.16),rgba(16,26,43,0.5)_46%,rgba(11,15,26,0.82))] p-5 transition-all duration-500 hover:-translate-y-1 hover:border-gold-500/60 hover:shadow-[0_34px_80px_-52px_rgba(232,163,61,0.9)]"
+                  className="group relative flex h-full flex-col rounded-2xl border border-gold-500/25 bg-[linear-gradient(0deg,rgba(232,163,61,0.16),rgba(16,26,43,0.5)_46%,rgba(11,15,26,0.82))] p-5 transition-all duration-500 hover:-translate-y-1 hover:border-gold-500/60 hover:shadow-[0_34px_80px_-52px_rgba(232,163,61,0.9)]"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold-500/45 font-display text-lg text-gold-400 transition-colors duration-500 group-hover:border-gold-500/85 group-hover:text-gold-300">
                     {index + 1}
