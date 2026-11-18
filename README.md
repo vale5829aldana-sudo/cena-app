@@ -53,7 +53,8 @@ cp .env.example .env        # en Windows: copy .env.example .env
 mysql -u root -p -e "CREATE DATABASE eventos CHARACTER SET utf8mb4;"
 
 # 4. Aplicar migraciones y generar el cliente de Prisma
-npm run db:migrate          # o: npx prisma migrate deploy
+npx prisma migrate deploy    # en desarrollo puedes usar: npm run db:migrate
+npm run db:generate
 
 # 5. Cargar los datos iniciales (categorías, menú y usuario admin)
 npm run db:seed
@@ -103,7 +104,8 @@ npm run start:local          # next start -H 0.0.0.0 -p 3000
 Notas de despliegue:
 
 - Antes del primer arranque aplica las migraciones y el seed:
-  `npx prisma migrate deploy && npm run db:seed`.
+  `npx prisma migrate deploy && npm run db:seed` (el cliente de Prisma se genera
+  solo al instalar, gracias al script `postinstall`).
 - El servidor sirve las **imágenes del menú** desde `data/uploads/` mediante la
   ruta `/uploads/[file]` (leen el disco en cada petición, así que las fotos
   subidas desde el panel aparecen sin reiniciar).
