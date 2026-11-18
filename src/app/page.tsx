@@ -9,16 +9,20 @@ export const dynamic = "force-dynamic";
 
 const STEPS = [
   {
-    title: "Entrada compartida",
-    body: "Eliges una entrada y la compartes con otro comensal. Ambos confirman y el costo se divide entre dos.",
+    title: "Llega y entra",
+    body: "Al entrar al evento, toca Entrada compartida.",
   },
   {
-    title: "Plato fuerte y bebida",
-    body: "Después armas tu plato fuerte y tu bebida directamente del menú de Bombay Rooftop.",
+    title: "Escoge una entrada para dos",
+    body: "Selecciona una entrada del menú y compártela con la persona que esté contigo. Cuando ambos la confirman, el sistema la divide automáticamente.",
   },
   {
-    title: "Dentro de tu límite",
-    body: "La mitad de la entrada, más tu plato y tu bebida, deben caber en tu límite de gasto.",
+    title: "Arma tu plato y bebida",
+    body: "Después, elige tu plato fuerte y tu bebida directamente del menú de Bombay Rooftop.",
+  },
+  {
+    title: "Todo cuadra en tu menú",
+    body: "El sistema suma la mitad de la entrada con tu plato y tu bebida. Si el total supera lo asignado a tu consumo, te avisa antes de confirmar.",
   },
 ];
 
@@ -87,7 +91,7 @@ export default async function Home() {
               <div>
                 <Eyebrow>Cómo funciona la noche</Eyebrow>
                 <h2 className="mt-3 font-display text-3xl text-ivory">
-                  La dinámica
+                  Pasos
                 </h2>
               </div>
               <Link
@@ -101,13 +105,16 @@ export default async function Home() {
               </Link>
             </div>
 
-            <ol className="mt-9 grid gap-7 sm:grid-cols-3">
+            <ol className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {STEPS.map((step, index) => (
-                <li key={step.title}>
-                  <span className="font-display text-2xl text-gold-500/80">
-                    0{index + 1}
+                <li
+                  key={step.title}
+                  className="group relative flex h-full flex-col rounded-2xl border border-gold-500/20 bg-night-950/45 p-5 transition-all duration-500 hover:-translate-y-1 hover:border-gold-500/55 hover:bg-night-950/75 hover:shadow-[0_34px_80px_-52px_rgba(232,163,61,0.85)]"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold-500/45 font-display text-lg text-gold-400 transition-colors duration-500 group-hover:border-gold-500/85 group-hover:text-gold-300">
+                    {index + 1}
                   </span>
-                  <h3 className="mt-2 font-display text-xl text-ivory">
+                  <h3 className="mt-4 font-display text-lg leading-snug text-ivory">
                     {step.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-pearl">
