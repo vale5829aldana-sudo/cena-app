@@ -99,6 +99,16 @@ const DISHES = [
     vegetarian: 0, vegan: 0, subgroup: null,
     description: 'Blend de carnes maduradas, tocineta crocante, queso cheddar y salsa de pepinillos en un pan brioche, acompañado de papas rústicas y alioli asiático.',
   },
+  {
+    id: 'cmwk5u61n0007m0pof5a2nuaq', categoryId: 'cat-fuertes', name: 'Bife', price: 62000,
+    vegetarian: 0, vegan: 0, subgroup: null,
+    description: 'Bife argentino a término al josper acompañado de papines al romero en mantequilla y chimichurri',
+  },
+  {
+    id: 'cmwk5wgyt0008m0poorbn0le1', categoryId: 'cat-fuertes', name: 'Cremoso de Salmon', price: 62000,
+    vegetarian: 0, vegan: 0, subgroup: null,
+    description: 'Salmon al josper sobre una cama de arroz cremoso y mizuna aderezada',
+  },
 
   // Bebidas — Mocktails
   {
@@ -133,6 +143,47 @@ const DISHES = [
   { id: 'dish-manantial', categoryId: 'cat-bebidas', name: 'Manantial', price: 10500, vegetarian: 0, vegan: 0, subgroup: 'Gaseosas y aguas', description: 'Agua sin gas.' },
   { id: 'dish-manantial-gas', categoryId: 'cat-bebidas', name: 'Manantial Gas', price: 10500, vegetarian: 0, vegan: 0, subgroup: 'Gaseosas y aguas', description: 'Agua con gas.' },
 ]
+
+/**
+ * Imagen de cada plato/bebida. Los archivos viven en `data/uploads/` y se
+ * versionan en el repositorio, así que un despliegue nuevo ya trae las fotos.
+ * El `imageUrl` se guarda en la base de datos, por eso el seed debe asignarlo.
+ */
+const DISH_IMAGES = {
+  // Entradas
+  'dish-hummus-bombay': '31d5c9f4-f08f-4543-a8b8-8f0e495e1476.avif',
+  'dish-kibbes-de-morcilla': 'e7ffec3d-1a56-460f-9ca9-2349a072f386.avif',
+  'dish-tacos-shiva-x2': '75c3e251-a5de-4ee3-99a2-96dafc49a7b3.avif',
+  'dish-karma-mini-burguers': 'f2b3d86b-0292-4901-ba18-8b223207ca28.avif',
+  'dish-brochetas-pollo-tandoori': '772f285f-9551-4177-b56a-e54ceb2e007f.avif',
+  'dish-veggie-samosa': '4540333d-f950-4294-9003-4ba5d194dbdf.avif',
+  'dish-chicken-samosa': 'a9cf5cf6-4d47-4501-8237-f86788a5dcf6.avif',
+  'dish-jheenga-samosa': 'ece1c9f8-0608-43f4-b4dd-5a43266726ef.avif',
+  'dish-ceviche-chicharron': 'c1256005-808a-4545-aea5-504c49140096.avif',
+  'dish-ceviche-salmon': '5cb30084-8d09-4427-9224-2e885732b670.avif',
+
+  // Platos fuertes
+  'dish-fogata-de-mariscos': '4897cb06-86b0-4917-9335-f78c4caabedf.avif',
+  'dish-caribbean-chicken': 'ab783184-5477-4842-bfcc-3b866fc5ac5c.avif',
+  'dish-wrap-pollo-tandoori': '717dfa77-23b5-474f-8e06-8586db4bcd84.avif',
+  'dish-ensalada-goa': '6720831b-a7bc-4a20-a3a5-fd30ade61359.avif',
+  'dish-cheeseburger': '4f6bb11a-fe3c-445b-bbdc-8a62ad451099.avif',
+  'cmwk5u61n0007m0pof5a2nuaq': 'c241aedf-58be-4b45-8a96-e449147287c1.avif', // Bife
+  'cmwk5wgyt0008m0poorbn0le1': '8b91e1f7-33e4-45b6-837b-69c939f61ecc.avif', // Cremoso de Salmon
+
+  // Bebidas
+  'dish-mocktail-pasion-rosas': '69ec9a76-feb3-48ca-8278-d36324063a53.avif',
+  'dish-mocktail-jengibre-cardamomo': 'e3a699bb-20e2-4690-9b55-e6a9c988ff34.avif',
+  'dish-ginger-mil976': 'd8ae756e-f17a-4109-8278-8f383f9dc044.avif',
+  'dish-tonica-mil976': '0d95e16b-50d4-484f-9b4a-f9c1bdb496f7.avif',
+  'dish-coca-cola-original': '6450ea44-b5cb-4b2b-bc99-3ec3e0fb6c34.avif',
+  'dish-coca-cola-zero': '8126a89c-8332-4be6-b88b-c973fe4a0344.avif',
+  'dish-ginger-schweppes': 'ca45898a-04d5-4023-8fd3-e42fe029debd.avif',
+  'dish-soda-schweppes': 'e81814f5-6f93-4620-be4f-4d78ee60c037.avif',
+  'dish-tonica-schweppes': '699c61b4-6d08-4039-bfef-156e6903631b.avif',
+  'dish-manantial': 'c96366cb-e7e2-4400-9413-ec7d6deca26f.avif',
+  'dish-manantial-gas': '48e4ba89-9227-41e8-8c15-e09275c1a003.avif',
+}
 
 function hashPassword(password) {
   const salt = randomBytes(16).toString('hex')
@@ -172,12 +223,15 @@ async function main() {
     }
 
     for (const d of DISHES) {
+      const imageName = DISH_IMAGES[d.id]
+      const imageUrl = imageName ? `/uploads/${imageName}` : null
       await conn.query(
         `INSERT INTO Dish (id, categoryId, name, description, price, imageUrl, subgroup, active, isVegetarian, isVegan, createdAt)
-         VALUES (?, ?, ?, ?, ?, NULL, ?, 1, ?, ?, NOW())
+         VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, NOW())
          ON DUPLICATE KEY UPDATE name=VALUES(name), description=VALUES(description), price=VALUES(price),
-           subgroup=VALUES(subgroup), isVegetarian=VALUES(isVegetarian), isVegan=VALUES(isVegan)`,
-        [d.id, d.categoryId, d.name, d.description, d.price, d.subgroup, d.vegetarian, d.vegan],
+           subgroup=VALUES(subgroup), isVegetarian=VALUES(isVegetarian), isVegan=VALUES(isVegan),
+           imageUrl=IFNULL(Dish.imageUrl, VALUES(imageUrl))`,
+        [d.id, d.categoryId, d.name, d.description, d.price, imageUrl, d.subgroup, d.vegetarian, d.vegan],
       )
     }
 

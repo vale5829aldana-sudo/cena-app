@@ -18,6 +18,13 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "5mb",
     },
   },
+  // Las imágenes del menú viven fuera de `public/` (en `data/uploads/`) y se
+  // sirven con la ruta `/uploads/[file]`, que las lee del disco. Incluimos esa
+  // carpeta en el trazado de archivos para que también viaje en despliegues
+  // empaquetados (standalone, Docker, serverless).
+  outputFileTracingIncludes: {
+    "/uploads/\\[file\\]": ["./data/uploads/**/*"],
+  },
 };
 
 export default nextConfig;

@@ -108,7 +108,12 @@ Notas de despliegue:
   solo al instalar, gracias al script `postinstall`).
 - El servidor sirve las **imágenes del menú** desde `data/uploads/` mediante la
   ruta `/uploads/[file]` (leen el disco en cada petición, así que las fotos
-  subidas desde el panel aparecen sin reiniciar).
+  subidas desde el panel aparecen sin reiniciar). Esa carpeta está **versionada**
+  en el repositorio y el `seed` asigna la imagen de cada plato, de modo que un
+  despliegue nuevo ya se ve con fotos.
+- Si despliegas en un entorno empaquetado (Vercel, Docker `standalone`, etc.),
+  la configuración ya incluye `data/uploads/` en el trazado de archivos
+  (`outputFileTracingIncludes`), así que las fotos viajan con la app.
 - Para mantenerlo vivo puedes usar **PM2** (`pm2 start "npm run start" --name cena-app`)
   o un servicio de **systemd**, y ponerlo detrás de un proxy inverso (Nginx, Caddy)
   con HTTPS.
