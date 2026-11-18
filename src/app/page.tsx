@@ -86,30 +86,19 @@ export default async function Home() {
           </div>
 
           {/* Contenedor de la dinámica: explica cómo se arma la noche y da paso al evento */}
-          <section className="mt-12 rounded-3xl border border-gold-500/25 bg-night-900/55 p-8 backdrop-blur-sm transition-colors duration-500 hover:border-gold-500/40 sm:p-10 lg:max-w-4xl">
-            <div className="flex flex-wrap items-end justify-between gap-5">
-              <div>
-                <Eyebrow>Cómo funciona la noche</Eyebrow>
-                <h2 className="mt-3 font-display text-3xl text-ivory">
-                  Pasos
-                </h2>
-              </div>
-              <Link
-                href="/comensal"
-                className="group inline-flex items-center gap-2 rounded-full border border-gold-500/45 bg-gold-500/10 px-6 py-3 text-sm text-gold-300 transition-all duration-500 hover:border-gold-500/80 hover:bg-gold-500/20 hover:text-ivory"
-              >
-                Entrar al evento
-                <span className="transition-transform duration-500 group-hover:translate-x-1">
-                  →
-                </span>
-              </Link>
+          <section className="mt-12 rounded-3xl border border-gold-500/25 bg-night-900/55 p-8 backdrop-blur-sm transition-colors duration-500 hover:border-gold-500/40 sm:p-10 lg:max-w-5xl">
+            <div>
+              <Eyebrow>Cómo funciona la noche</Eyebrow>
+              <h2 className="mt-3 font-display text-3xl text-ivory">
+                Pasos
+              </h2>
             </div>
 
             <ol className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {STEPS.map((step, index) => (
                 <li
                   key={step.title}
-                  className="group relative flex h-full flex-col rounded-2xl border border-gold-500/20 bg-night-950/45 p-5 transition-all duration-500 hover:-translate-y-1 hover:border-gold-500/55 hover:bg-night-950/75 hover:shadow-[0_34px_80px_-52px_rgba(232,163,61,0.85)]"
+                  className="group relative flex h-full flex-col rounded-2xl border border-gold-500/25 bg-[linear-gradient(180deg,rgba(232,163,61,0.16),rgba(16,26,43,0.5)_46%,rgba(11,15,26,0.82))] p-5 transition-all duration-500 hover:-translate-y-1 hover:border-gold-500/60 hover:shadow-[0_34px_80px_-52px_rgba(232,163,61,0.9)]"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold-500/45 font-display text-lg text-gold-400 transition-colors duration-500 group-hover:border-gold-500/85 group-hover:text-gold-300">
                     {index + 1}
@@ -124,10 +113,21 @@ export default async function Home() {
               ))}
             </ol>
 
-            <p className="mt-9 border-t border-ivory/10 pt-6 text-sm leading-relaxed text-pearl">
-              Al ingresar eliges quién eres y armas tu pedido. Podrás editarlo
-              hasta que el evento se cierre.
-            </p>
+            <div className="mt-10 flex flex-col items-center gap-5 border-t border-ivory/10 pt-8 text-center">
+              <Link
+                href="/comensal"
+                className="group inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-gold-400 to-gold-500 px-9 py-4 font-display text-base tracking-wide text-night-950 shadow-[0_20px_50px_-18px_rgba(232,163,61,0.75)] transition-all duration-500 hover:from-gold-300 hover:to-gold-400 hover:shadow-[0_28px_64px_-16px_rgba(232,163,61,0.95)]"
+              >
+                Entrar al evento
+                <span className="transition-transform duration-500 group-hover:translate-x-1">
+                  →
+                </span>
+              </Link>
+              <p className="max-w-xl text-sm leading-relaxed text-pearl">
+                Al ingresar eliges quién eres y armas tu pedido. Podrás editarlo
+                hasta que el evento se cierre.
+              </p>
+            </div>
           </section>
         </div>
 
