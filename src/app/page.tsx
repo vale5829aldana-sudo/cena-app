@@ -39,10 +39,10 @@ export default async function Home() {
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-40"
+          className="object-cover opacity-55"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-night-950/75 via-night-950/88 to-night-950" />
-        <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,transparent_10%,rgba(11,15,26,0.92))]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-night-950/60 via-night-950/76 to-night-950/95" />
+        <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,transparent_10%,rgba(11,15,26,0.82))]" />
         <div className="lights-bokeh absolute inset-0 opacity-50" />
       </div>
 
