@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useMemo, useState, useTransition } from 'react'
+import { useEffect, useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { computeBudget, SHARED_ENTRADA_FACTOR, SOLO_ENTRADA_FACTOR } from '@/lib/domain'
 import { formatCOP } from '@/lib/format'
@@ -60,18 +60,18 @@ function DishCard({
   dish,
   selected,
   disabled,
-  onSelect,
+  onOpen,
 }: {
   dish: Dish
   selected: boolean
   disabled?: boolean
-  onSelect: () => void
+  onOpen: () => void
 }) {
   return (
     <button
       type="button"
       disabled={disabled}
-      onClick={onSelect}
+      onClick={onOpen}
       className={cn(
         'group flex w-full items-stretch gap-3 rounded-2xl border p-3 text-left transition-all duration-500 disabled:cursor-not-allowed disabled:opacity-50',
         selected
@@ -148,6 +148,147 @@ function DishCard({
   )
 }
 
+/**
+ * Detalle del plato en una capa modal: imagen grande, nombre, descripción y el
+ * botón para elegirlo. El fondo es un degradado rojo Bombay que se funde con el
+ * negro nocturno de la app.
+ */
+function DishDetail({
+  dish,
+  selected,
+  selectable,
+  hint,
+  actionLabel,
+  pending,
+  onConfirm,
+  onClose,
+}: {
+  dish: Dish
+  selected: boolean
+  selectable: boolean
+  hint?: string
+  actionLabel: string
+  pending: boolean
+  onConfirm: () => void
+  onClose: () => void
+}) {
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = previousOverflow
+    }
+  }, [onClose])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-label={dish.name}
+    >
+      <button
+        type="button"
+        aria-label="Cerrar detalle"
+        onClick={onClose}
+        className="absolute inset-0 cursor-default backdrop-blur-[3px]"
+        style={{
+          backgroundImage:
+            'radial-gradient(140% 100% at 50% -12%, rgba(200,16,46,0.62) 0%, rgba(157,12,36,0.42) 42%, rgba(11,15,26,0.92) 78%)',
+        }}
+      />
+
+      <div className="relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-ivory/15 bg-night-900/95 shadow-luxe">
+        <div className="relative aspect-[4/3] w-full overflow-hidden">
+          {dish.imageUrl ? (
+            <Image
+              src={dish.imageUrl}
+              alt={dish.name}
+              fill
+              sizes="(max-width: 640px) 100vw, 512px"
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-night-950/60 text-gold-500/60">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-12 w-12"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.1"
+                aria-hidden
+              >
+                <path
+                  d="M7 3v8a2.5 2.5 0 0 0 5 0V3M9.5 3v18M17 3c-1.4 1.6-1.4 5.4 0 7v11"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          )}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-night-900 to-transparent" />
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar"
+            className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-ivory/20 bg-night-950/70 text-ivory backdrop-blur transition-colors hover:border-ivory/40 hover:bg-night-950/90"
+          >
+            <svg
+              viewBox="0 0 20 20"
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              aria-hidden
+            >
+              <path d="m5 5 10 10M15 5 5 15" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="p-6">
+          <div className="flex items-start justify-between gap-3">
+            <h2 className="font-display text-2xl leading-tight text-ivory">{dish.name}</h2>
+            <span className="whitespace-nowrap font-display text-lg text-gold-400">
+              {formatCOP(dish.price)}
+            </span>
+          </div>
+
+          {dish.isVegan || dish.isVegetarian ? (
+            <div className="mt-3 flex gap-1.5">
+              <Badge tone="green">{dish.isVegan ? 'Vegano' : 'Vegetariano'}</Badge>
+            </div>
+          ) : null}
+
+          <p className="mt-3 text-sm leading-relaxed text-pearl">{dish.description}</p>
+
+          {hint ? (
+            <p className="mt-4 rounded-lg border border-gold-500/30 bg-gold-500/8 p-2.5 text-xs text-gold-300">
+              {hint}
+            </p>
+          ) : null}
+
+          <div className="mt-6">
+            <Button
+              className="w-full"
+              size="lg"
+              disabled={!selectable || pending || selected}
+              onClick={onConfirm}
+            >
+              {selected ? 'Ya está elegido' : actionLabel}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function SectionTitle({ index, children }: { index: string; children: string }) {
   return (
     <h2 className="mb-4 flex items-baseline gap-3">
@@ -166,6 +307,10 @@ export function PedidoClient(props: PedidoProps) {
   const [entradaId, setEntradaId] = useState<string | null>(null)
   const [partnerId, setPartnerId] = useState<string>('')
   const [modoEntrada, setModoEntrada] = useState<'compartir' | 'solo'>('compartir')
+  const [detail, setDetail] = useState<{
+    dish: Dish
+    context: 'entrada' | 'solo' | 'plato' | 'bebida'
+  } | null>(null)
 
   const closed = status === 'CLOSED'
   const entradaCat = categories.find((c) => c.shareable)
@@ -208,6 +353,55 @@ export function PedidoClient(props: PedidoProps) {
       }
     })
   }
+
+  const closeDetail = () => setDetail(null)
+
+  const confirmDetail = () => {
+    if (!detail) return
+    const { dish, context } = detail
+    setDetail(null)
+    if (context === 'entrada') {
+      setEntradaId(dish.id)
+    } else if (context === 'solo') {
+      run(() => setSoloEntrada(dish.id))
+    } else if (context === 'plato' && platoCat) {
+      run(() => setDishSelection(platoCat.id, dish.id))
+    } else if (context === 'bebida' && bebidaCat) {
+      run(() => setDishSelection(bebidaCat.id, dish.id))
+    }
+  }
+
+  const detailSelected = !detail
+    ? false
+    : detail.context === 'entrada'
+      ? entradaId === detail.dish.id
+      : detail.context === 'solo'
+        ? soloEntrada?.dishId === detail.dish.id
+        : detail.context === 'plato' && platoCat
+          ? selections[platoCat.id]?.dishId === detail.dish.id
+          : detail.context === 'bebida' && bebidaCat
+            ? selections[bebidaCat.id]?.dishId === detail.dish.id
+            : false
+
+  const detailSelectable =
+    detail?.context === 'plato' || detail?.context === 'bebida'
+      ? entradaReady
+      : Boolean(detail)
+
+  const detailActionLabel = !detail
+    ? ''
+    : detail.context === 'entrada'
+      ? 'Elegir esta entrada'
+      : detail.context === 'solo'
+        ? 'Tomar esta entrada (100 %)'
+        : detail.context === 'plato'
+          ? 'Elegir este plato'
+          : 'Elegir esta bebida'
+
+  const detailHint =
+    detail && !detailSelectable
+      ? 'Primero elige tu entrada (compartida o individual) para habilitar platos y bebidas.'
+      : undefined
 
   const readyToConfirm =
     entradaReady &&
@@ -327,7 +521,7 @@ export function PedidoClient(props: PedidoProps) {
                               dish={d}
                               selected={entradaId === d.id}
                               disabled={closed || pending}
-                              onSelect={() => setEntradaId(d.id)}
+                              onOpen={() => setDetail({ dish: d, context: 'entrada' })}
                             />
                           ))}
                         </div>
@@ -376,7 +570,7 @@ export function PedidoClient(props: PedidoProps) {
                           dish={d}
                           selected={soloEntrada?.dishId === d.id}
                           disabled={closed || pending}
-                          onSelect={() => run(() => setSoloEntrada(d.id))}
+                          onOpen={() => setDetail({ dish: d, context: 'solo' })}
                         />
                       ))}
                     </div>
@@ -479,8 +673,8 @@ export function PedidoClient(props: PedidoProps) {
                     key={d.id}
                     dish={d}
                     selected={selections[platoCat.id]?.dishId === d.id}
-                    disabled={closed || pending || !entradaReady}
-                    onSelect={() => run(() => setDishSelection(platoCat.id, d.id))}
+                    disabled={closed || pending}
+                    onOpen={() => setDetail({ dish: d, context: 'plato' })}
                   />
                 ))}
               </div>
@@ -503,8 +697,8 @@ export function PedidoClient(props: PedidoProps) {
                           key={d.id}
                           dish={d}
                           selected={selections[bebidaCat.id]?.dishId === d.id}
-                          disabled={closed || pending || !entradaReady}
-                          onSelect={() => run(() => setDishSelection(bebidaCat.id, d.id))}
+                          disabled={closed || pending}
+                          onOpen={() => setDetail({ dish: d, context: 'bebida' })}
                         />
                       ))}
                     </div>
@@ -600,6 +794,19 @@ export function PedidoClient(props: PedidoProps) {
           </Card>
         </aside>
       </div>
+
+      {detail ? (
+        <DishDetail
+          dish={detail.dish}
+          selected={detailSelected}
+          selectable={detailSelectable}
+          hint={detailHint}
+          actionLabel={detailActionLabel}
+          pending={pending || closed}
+          onConfirm={confirmDetail}
+          onClose={closeDetail}
+        />
+      ) : null}
     </main>
   )
 }

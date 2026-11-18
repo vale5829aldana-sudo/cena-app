@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { getAttendees, getEvent } from '@/lib/data'
-import { formatCOP } from '@/lib/format'
 import { Badge, Card, PageHeader } from '@/components/ui'
 import { BrandLockup, SiteFooter } from '@/components/brand'
 import { selectAttendee } from './actions'
@@ -75,9 +74,6 @@ export default async function ComensalPage() {
                   <span className="text-gold-500 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                     →
                   </span>
-                </span>
-                <span className="mt-2 block text-xs uppercase tracking-[0.18em] text-pearl/70">
-                  Límite {formatCOP(a.limitAmount)}
                 </span>
                 {a.orderConfirmedAt ? (
                   <span className="mt-3 inline-flex">
