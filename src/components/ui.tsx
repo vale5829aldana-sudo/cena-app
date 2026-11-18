@@ -111,7 +111,7 @@ export function Button({
       'text-pearl hover:text-ivory hover:bg-ivory/5 disabled:opacity-50',
   }
   const sizes: Record<string, string> = {
-    sm: 'px-3.5 py-1.5 text-xs',
+    sm: 'px-3.5 py-2 text-xs',
     md: 'px-5 py-2.5 text-sm',
     lg: 'px-7 py-3 text-sm',
   }
@@ -131,7 +131,7 @@ export function Button({
 /* ------------------------------------------------------------------ Campos */
 
 const fieldBase =
-  'w-full rounded-xl border border-ivory/15 bg-night-950/50 px-3.5 py-2.5 text-sm text-ivory placeholder:text-pearl/40 outline-none transition-colors duration-200 focus:border-gold-500/70 focus:bg-night-950/80 focus:ring-2 focus:ring-gold-500/15'
+  'w-full rounded-xl border border-ivory/15 bg-night-950/50 px-3.5 py-2.5 text-base text-ivory placeholder:text-pearl/40 outline-none transition-colors duration-200 focus:border-gold-500/70 focus:bg-night-950/80 focus:ring-2 focus:ring-gold-500/15 sm:text-sm'
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={cn(fieldBase, className)} />

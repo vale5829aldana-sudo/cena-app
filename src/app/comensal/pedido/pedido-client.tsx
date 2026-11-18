@@ -427,8 +427,8 @@ export function PedidoClient(props: PedidoProps) {
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
       <AutoRefresh enabled={pairing?.status === 'PENDING'} />
 
-      <header className="mb-8 flex items-center justify-between">
-        <BrandLockup href="/comensal" subtitle="Tu pedido" />
+      <header className="mb-8 flex flex-wrap items-center justify-between gap-3">
+        <BrandLockup href="/comensal" subtitle="Tu pedido" className="min-w-0" />
         <form action={signOutAttendee}>
           <Button variant="ghost" size="sm" type="submit">
             Cambiar de comensal
@@ -439,7 +439,7 @@ export function PedidoClient(props: PedidoProps) {
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow>Comensal</Eyebrow>
-          <h1 className="mt-2 font-display text-4xl leading-tight text-ivory">
+          <h1 className="mt-2 font-display text-3xl leading-tight text-ivory sm:text-4xl">
             {attendee.name}
           </h1>
         </div>
@@ -473,12 +473,12 @@ export function PedidoClient(props: PedidoProps) {
 
             {!pairing && entradaCat ? (
               <>
-                <div className="mb-4 inline-flex rounded-full border border-ivory/15 bg-night-900/50 p-1 text-xs">
+                <div className="mb-4 flex w-full rounded-full border border-ivory/15 bg-night-900/50 p-1 text-xs sm:inline-flex sm:w-auto">
                   <button
                     type="button"
                     onClick={() => setModoEntrada('compartir')}
                     className={cn(
-                      'rounded-full px-4 py-1.5 font-medium tracking-wide transition-all duration-300',
+                      'flex-1 rounded-full px-4 py-2 font-medium tracking-wide transition-all duration-300 sm:flex-none',
                       modoEntrada === 'compartir'
                         ? 'bg-gold-500 text-night-950'
                         : 'text-pearl hover:text-ivory',
@@ -490,7 +490,7 @@ export function PedidoClient(props: PedidoProps) {
                     type="button"
                     onClick={() => setModoEntrada('solo')}
                     className={cn(
-                      'rounded-full px-4 py-1.5 font-medium tracking-wide transition-all duration-300',
+                      'flex-1 rounded-full px-4 py-2 font-medium tracking-wide transition-all duration-300 sm:flex-none',
                       modoEntrada === 'solo'
                         ? 'bg-gold-500 text-night-950'
                         : 'text-pearl hover:text-ivory',

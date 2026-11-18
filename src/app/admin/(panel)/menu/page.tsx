@@ -87,7 +87,7 @@ export default async function MenuPage() {
                 <Label>Categoría</Label>
                 <Input name="name" defaultValue={cat.name} required />
               </div>
-              <div className="w-44">
+              <div className="w-full sm:w-44">
                 <Label>Tope de precio (COP)</Label>
                 <Input
                   name="maxPrice"

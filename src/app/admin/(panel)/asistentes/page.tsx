@@ -58,7 +58,7 @@ export default async function AsistentesPage() {
             <Label>Nombre</Label>
             <Input name="name" placeholder="Nombre del comensal" required />
           </div>
-          <div className="w-44">
+          <div className="w-full sm:w-44">
             <Label>Límite (COP)</Label>
             <Input
               name="limitAmount"
@@ -88,7 +88,7 @@ export default async function AsistentesPage() {
                     <Label>Nombre</Label>
                     <Input name="name" defaultValue={a.name} required />
                   </div>
-                  <div className="w-44">
+                  <div className="w-full sm:w-44">
                     <Label>Límite (COP)</Label>
                     <Input
                       name="limitAmount"

@@ -27,18 +27,18 @@ export default async function ComensalPage() {
   const attendees = await getAttendees(event.id)
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-8">
-      <header className="flex items-center justify-between">
-        <BrandLockup href="/" subtitle="Cena del evento" />
+    <main className="mx-auto w-full max-w-5xl px-5 py-6 sm:px-6 sm:py-8">
+      <header className="flex items-center justify-between gap-3">
+        <BrandLockup href="/" subtitle="Cena del evento" className="min-w-0" />
         <Link
           href="/"
-          className="text-[11px] uppercase tracking-[0.28em] text-pearl transition-colors hover:text-ivory"
+          className="-my-2 shrink-0 whitespace-nowrap py-2 text-[11px] uppercase tracking-[0.16em] text-pearl transition-colors hover:text-ivory sm:tracking-[0.28em]"
         >
           Inicio
         </Link>
       </header>
 
-      <div className="mt-12">
+      <div className="mt-10 sm:mt-12">
         <PageHeader
           eyebrow="Bienvenido"
           title="¿Quién eres?"

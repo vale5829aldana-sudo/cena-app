@@ -52,6 +52,10 @@ export default async function ReportesPage() {
         }
       />
 
+      <p className="mb-4 text-xs text-pearl sm:hidden">
+        Desliza las tablas horizontalmente para ver todas las columnas.
+      </p>
+
       <Card className="print-plain mb-6 p-6">
         <h2 className="mb-4 font-display text-xl text-ivory">Consolidado de cocina</h2>
         {kitchen.length === 0 ? (

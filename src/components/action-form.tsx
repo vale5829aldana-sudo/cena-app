@@ -99,7 +99,7 @@ export function ConfirmButton({
         if (!confirm(message)) event.preventDefault()
       }}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3.5 py-1.5 text-xs font-medium tracking-wide transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3.5 py-2 text-xs font-medium tracking-wide transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60',
         className,
       )}
     >

@@ -29,7 +29,7 @@ export function Wordmark({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        'font-display uppercase tracking-[0.28em] text-ivory',
+        'font-display uppercase tracking-[0.2em] text-ivory sm:tracking-[0.28em]',
         className,
       )}
     >
@@ -52,9 +52,9 @@ export function BrandLockup({
     <span className="flex items-center gap-3">
       <BrandMark />
       <span className="flex flex-col leading-none">
-        <Wordmark className="text-sm" />
+        <Wordmark className="text-xs sm:text-sm" />
         {subtitle ? (
-          <span className="mt-1 text-[10px] uppercase tracking-[0.3em] text-pearl/70">
+          <span className="mt-1 text-[9px] uppercase tracking-[0.22em] text-pearl/70 sm:text-[10px] sm:tracking-[0.3em]">
             {subtitle}
           </span>
         ) : null}

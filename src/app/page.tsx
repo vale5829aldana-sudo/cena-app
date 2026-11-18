@@ -46,24 +46,24 @@ export default async function Home() {
         <div className="lights-bokeh absolute inset-0 opacity-50" />
       </div>
 
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8">
-        <header className="flex items-center justify-between gap-4">
-          <BrandLockup href="/" subtitle="Cena del evento" />
+      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 py-6 sm:px-6 sm:py-8">
+        <header className="flex items-center justify-between gap-3">
+          <BrandLockup href="/" subtitle="Cena del evento" className="min-w-0" />
           <Link
             href="/admin"
-            className="text-[11px] uppercase tracking-[0.28em] text-pearl/70 transition-colors hover:text-ivory"
+            className="-my-2 shrink-0 whitespace-nowrap py-2 text-[10px] uppercase tracking-[0.16em] text-pearl/70 transition-colors hover:text-ivory sm:text-[11px] sm:tracking-[0.28em]"
           >
             Administración
           </Link>
         </header>
 
-        <div className="flex flex-1 flex-col justify-center py-14">
+        <div className="flex flex-1 flex-col justify-center py-10 sm:py-14">
           <div className="max-w-3xl">
             <Eyebrow>Bogotá · Terraza nocturna</Eyebrow>
-            <h1 className="mt-4 font-display text-5xl leading-[1.04] tracking-tight text-ivory sm:text-6xl lg:text-7xl">
+            <h1 className="mt-4 font-display text-4xl leading-[1.06] tracking-tight text-ivory sm:text-5xl md:text-6xl lg:text-7xl">
               {event?.name ?? "La cena del evento"}
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-pearl">
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-pearl sm:text-lg">
               {event?.description ||
                 "Una noche bajo las estrellas. Cada comensal arma su experiencia —entrada compartida, plato fuerte y bebida— dentro de su límite de gasto."}
             </p>
@@ -86,7 +86,7 @@ export default async function Home() {
           </div>
 
           {/* Contenedor de la dinámica: explica cómo se arma la noche y da paso al evento */}
-          <section className="mt-12 rounded-3xl border border-gold-500/25 bg-night-900/55 p-8 backdrop-blur-sm transition-colors duration-500 hover:border-gold-500/40 sm:p-10 lg:max-w-5xl">
+          <section className="mt-10 rounded-3xl border border-gold-500/25 bg-night-900/55 p-6 backdrop-blur-sm transition-colors duration-500 hover:border-gold-500/40 sm:mt-12 sm:p-8 lg:max-w-5xl lg:p-10">
             <div>
               <Eyebrow>Cómo funciona la noche</Eyebrow>
               <h2 className="mt-3 font-display text-3xl text-ivory">
@@ -116,7 +116,7 @@ export default async function Home() {
             <div className="mt-10 flex flex-col items-center gap-5 border-t border-ivory/10 pt-8 text-center">
               <Link
                 href="/comensal"
-                className="group inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-gold-400 to-gold-500 px-9 py-4 font-display text-base tracking-wide text-night-950 shadow-[0_20px_50px_-18px_rgba(232,163,61,0.75)] transition-all duration-500 hover:from-gold-300 hover:to-gold-400 hover:shadow-[0_28px_64px_-16px_rgba(232,163,61,0.95)]"
+                className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-gold-400 to-gold-500 px-8 py-3.5 font-display text-base tracking-wide text-night-950 shadow-[0_20px_50px_-18px_rgba(232,163,61,0.75)] transition-all duration-500 hover:from-gold-300 hover:to-gold-400 hover:shadow-[0_28px_64px_-16px_rgba(232,163,61,0.95)] sm:w-auto sm:px-9 sm:py-4"
               >
                 Entrar al evento
                 <span className="transition-transform duration-500 group-hover:translate-x-1">
